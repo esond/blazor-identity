@@ -8,3 +8,9 @@ public interface IWeatherApi
     [Get("/weatherForecasts")]
     Task<IApiResponse<WeatherForecast[]>> GetWeatherForecasts();
 }
+
+public interface IUsersApi
+{
+    [Get("/me")]
+    Task<IApiResponse<(string claimType, string claimValue)[]>> GetMe();
+}

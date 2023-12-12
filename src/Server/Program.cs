@@ -1,8 +1,8 @@
+using BlazorIdentity.Relational;
 using BlazorIdentity.Web.Client;
 using BlazorIdentity.Web.Client.Pages;
 using BlazorIdentity.Web.Server.Components;
 using BlazorIdentity.Web.Server.Components.Account;
-using BlazorIdentity.Web.Server.Data;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -39,8 +39,16 @@ builder.Services.AddIdentityCore<ApplicationUser>(options => options.SignIn.Requ
 
 builder.Services.AddSingleton<IEmailSender<ApplicationUser>, IdentityNoOpEmailSender>();
 
+var apiBaseUri = new Uri("https://localhost:5277");
+
 builder.Services.AddRefitClient<IWeatherApi>()
-    .ConfigureHttpClient(client => client.BaseAddress = new Uri("https://localhost:5277"));
+    .ConfigureHttpClient(client => client.BaseAddress = apiBaseUri);
+
+builder.Services.AddRefitClient<IUsersApi>()
+    .ConfigureHttpClient(client => client.BaseAddress = apiBaseUri)
+    .AddHttpMessageHandler<CookieHandler>();
+
+builder.Services.AddScoped<CookieHandler>();
 
 var app = builder.Build();
 

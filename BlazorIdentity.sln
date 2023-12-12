@@ -9,9 +9,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorIdentity.Web.Client",
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorIdentity.Web.Server", "src\Server\BlazorIdentity.Web.Server.csproj", "{3181510E-E395-407B-B3F0-E44A167D8D4C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlazorIdentity.Api", "src\Api\BlazorIdentity.Api.csproj", "{351E4A09-67BE-4A66-A356-0A4EFECA45AE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorIdentity.Api", "src\Api\BlazorIdentity.Api.csproj", "{351E4A09-67BE-4A66-A356-0A4EFECA45AE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlazorIdentity.Shared", "src\Shared\BlazorIdentity.Shared.csproj", "{18B6DE70-15D9-4111-8349-3B2AB9F1EE63}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorIdentity.Shared", "src\Shared\BlazorIdentity.Shared.csproj", "{18B6DE70-15D9-4111-8349-3B2AB9F1EE63}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlazorIdentity.Relational", "src\Relational\BlazorIdentity.Relational.csproj", "{07AA0122-1D07-4733-AA36-2733634B7069}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -35,6 +37,10 @@ Global
 		{18B6DE70-15D9-4111-8349-3B2AB9F1EE63}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{18B6DE70-15D9-4111-8349-3B2AB9F1EE63}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{18B6DE70-15D9-4111-8349-3B2AB9F1EE63}.Release|Any CPU.Build.0 = Release|Any CPU
+		{07AA0122-1D07-4733-AA36-2733634B7069}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{07AA0122-1D07-4733-AA36-2733634B7069}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{07AA0122-1D07-4733-AA36-2733634B7069}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{07AA0122-1D07-4733-AA36-2733634B7069}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -44,5 +50,6 @@ Global
 		{3181510E-E395-407B-B3F0-E44A167D8D4C} = {395F8585-F9C6-4B47-BBAD-3B726B91D4EB}
 		{351E4A09-67BE-4A66-A356-0A4EFECA45AE} = {395F8585-F9C6-4B47-BBAD-3B726B91D4EB}
 		{18B6DE70-15D9-4111-8349-3B2AB9F1EE63} = {395F8585-F9C6-4B47-BBAD-3B726B91D4EB}
+		{07AA0122-1D07-4733-AA36-2733634B7069} = {395F8585-F9C6-4B47-BBAD-3B726B91D4EB}
 	EndGlobalSection
 EndGlobal

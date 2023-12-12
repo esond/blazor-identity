@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
-namespace BlazorIdentity.Web.Server.Data;
+namespace BlazorIdentity.Relational;
 
 public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
 {

@@ -1,4 +1,9 @@
+using System.Security.Claims;
+using BlazorIdentity.Relational;
 using BlazorIdentity.Shared.Models;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -8,15 +13,40 @@ builder.Services.AddCors(opts =>
         policy =>
         {
             policy.WithOrigins("https://localhost:7113")
+                .SetIsOriginAllowed(_ => true)
                 .AllowAnyMethod()
                 .AllowAnyHeader()
                 .AllowCredentials();
         });
 });
 
+builder.Services.AddAuthentication(IdentityConstants.ApplicationScheme)
+    .AddIdentityCookies()
+    .ApplicationCookie!.Configure(opt => opt.Events = new CookieAuthenticationEvents
+    {
+        OnRedirectToLogin = ctx =>
+        {
+            ctx.Response.StatusCode = 401;
+            return Task.CompletedTask;
+        }
+    });
+builder.Services.AddAuthorizationBuilder();
+
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ??
+    throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+    options.UseSqlServer(connectionString));
+
+builder.Services.AddIdentityCore<ApplicationUser>()
+    .AddEntityFrameworkStores<ApplicationDbContext>();
+
 var app = builder.Build();
 
 app.UseCors("api");
+
+//app.UseAuthentication();
+//app.UseAuthorization();
 
 var summaries = new[]
 {
@@ -37,7 +67,9 @@ app.MapGet("/weatherForecasts", context =>
 
 app.MapGet("/me", context =>
 {
-    return context.Response.WriteAsJsonAsync(context.User.Claims.Select(c => new { c.Type, c.Value }));
-});
+    return context.Response.WriteAsJsonAsync(context.User.Claims.Select(c => new { claimType = c.Type, claimValue = c.Value }));
+}).RequireAuthorization();
+
+//app.MapIdentityApi<ApplicationUser>();
 
 app.Run();
