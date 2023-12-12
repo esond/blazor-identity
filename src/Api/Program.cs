@@ -1,42 +1,43 @@
-using System.Text.Json.Serialization;
+using BlazorIdentity.Shared.Models;
 
-var builder = WebApplication.CreateSlimBuilder(args);
+var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.ConfigureHttpJsonOptions(options =>
+builder.Services.AddCors(opts =>
 {
-    options.SerializerOptions.TypeInfoResolverChain.Insert(0, AppJsonSerializerContext.Default);
+    opts.AddPolicy("api",
+        policy =>
+        {
+            policy.WithOrigins("https://localhost:7113")
+                .AllowAnyMethod()
+                .AllowAnyHeader()
+                .AllowCredentials();
+        });
 });
 
 var app = builder.Build();
+
+app.UseCors("api");
 
 var summaries = new[]
 {
     "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
 };
 
-app.MapGet("/weatherforecast", () =>
+app.MapGet("/weatherForecasts", context =>
 {
-    var forecast = Enumerable.Range(1, 5).Select(index =>
-            new WeatherForecast
-            (
+    var forecasts = Enumerable.Range(1, 5).Select(index =>
+            new WeatherForecast(
                 DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
                 Random.Shared.Next(-20, 55),
-                summaries[Random.Shared.Next(summaries.Length)]
-            ))
+                summaries[Random.Shared.Next(summaries.Length)]))
         .ToArray();
 
-    return forecast;
+    return context.Response.WriteAsJsonAsync(forecasts);
+});
+
+app.MapGet("/me", context =>
+{
+    return context.Response.WriteAsJsonAsync(context.User.Claims.Select(c => new { c.Type, c.Value }));
 });
 
 app.Run();
-
-record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
-{
-    public int TemperatureF => 32 + (int) (TemperatureC / 0.5556);
-}
-
-[JsonSerializable(typeof(WeatherForecast[]))]
-internal partial class AppJsonSerializerContext : JsonSerializerContext
-{
-
-}

@@ -5,7 +5,10 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <InvariantGlobalization>true</InvariantGlobalization>
-    <PublishAot>true</PublishAot>
   </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Shared\BlazorIdentity.Shared.csproj" />
+  </ItemGroup>
 
 </Project>
