@@ -8,15 +8,14 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddCors(opts =>
 {
-    opts.AddPolicy("api",
-        policy =>
-        {
-            policy.WithOrigins("https://localhost:7192", "https://localhost:5277")
-                .AllowAnyMethod()
-                .SetIsOriginAllowed(_ => true)
-                .AllowAnyHeader()
-                .AllowCredentials();
-        });
+    opts.AddDefaultPolicy(policy =>
+    {
+        policy.WithOrigins("https://localhost:7192", "https://localhost:5277")
+            .AllowAnyMethod()
+            .SetIsOriginAllowed(_ => true)
+            .AllowAnyHeader()
+            .AllowCredentials();
+    });
 });
 
 builder.Services.AddAuthentication(IdentityConstants.ApplicationScheme)
@@ -41,6 +40,10 @@ var app = builder.Build();
 
 app.MapIdentityApi<ApplicationUser>();
 
+app.UseCors();
+app.UseAuthentication();
+app.UseAuthorization();
+
 // provide an end point to clear the cookie for logout
 // NOTE: This logout code will be updated shortly.
 //       https://github.com/dotnet/blazor-samples/issues/132
@@ -52,8 +55,6 @@ app.MapPost("/Logout", async (ClaimsPrincipal user, SignInManager<ApplicationUse
 
 app.MapWeatherForecastsEndpoint()
     .MapMeEndpoint();
-
-app.UseCors("api");
 
 if (app.Environment.IsDevelopment())
 {

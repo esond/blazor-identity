@@ -33,7 +33,6 @@ public static class ProgramExtensions
             return context.Response.WriteAsJsonAsync(context.User.Claims.Select(c =>
                 new KeyValuePair<string, string>(c.Type, c.Value)));
         }).RequireAuthorization();
-        //.RequireCors("api");
 
         return app;
     }

@@ -1,6 +1,10 @@
 ﻿@page "/auth"
-
 @using Microsoft.AspNetCore.Authorization
+@using BlazorIdentity.Shared.Http
+
+@inject IUsersApi UsersApi
+
+@rendermode InteractiveWebAssembly
 
 @attribute [Authorize]
 
@@ -18,19 +22,82 @@
     <h2>Local user claims</h2>
     <table class="table">
         <thead>
+        <tr>
+            <th>Type</th>
+            <th>Value</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var claim in context.User.Claims)
+        {
+            <tr>
+                <td>@claim.Type</td>
+                <td>@claim.Value</td>
+            </tr>
+        }
+        </tbody>
+    </table>
+
+    <h2>Fetched user claims</h2>
+
+    @if (_fetchError is not null)
+    {
+        <h5>Error fetching items:</h5>
+        <p>
+            @_fetchError
+        </p>
+    }
+
+    @if (_fetchedClaims is null)
+    {
+        <p>
+            <em>Loading...</em>
+        </p>
+    }
+    else
+    {
+        <table class="table">
+            <thead>
             <tr>
                 <th>Type</th>
                 <th>Value</th>
             </tr>
-        </thead>
-        <tbody>
-            @foreach (var claim in context.User.Claims)
+            </thead>
+            <tbody>
+            @foreach (var claim in _fetchedClaims)
             {
                 <tr>
-                    <td>@claim.Type</td>
+                    <td>@claim.Key</td>
                     <td>@claim.Value</td>
                 </tr>
             }
-        </tbody>
-    </table>
+            </tbody>
+        </table>
+    }
 </AuthorizeView>
+
+@code {
+    private KeyValuePair<string, string>[]? _fetchedClaims;
+
+    private string? _fetchError;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+
+        // Simulate asynchronous loading to demonstrate a loading indicator
+        await Task.Delay(500);
+
+        try
+        {
+            var response = await UsersApi.GetMe();
+
+            _fetchedClaims = response.Content!;
+        }
+        catch (HttpRequestException ex)
+        {
+            _fetchError = $"{ex.StatusCode}: {ex.Message}";
+        }
+    }
+
+}
