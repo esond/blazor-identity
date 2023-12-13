@@ -8,4 +8,7 @@ builder.Services.AddAuthorizationCore();
 builder.Services.AddCascadingAuthenticationState();
 builder.Services.AddSingleton<AuthenticationStateProvider, PersistentAuthenticationStateProvider>();
 
+// MY STUFF
+builder.Services.AddApiClients("https://localhost:5277");
+
 await builder.Build().RunAsync();

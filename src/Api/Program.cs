@@ -1,6 +1,6 @@
 using System.Security.Claims;
+using BlazorIdentity.Api;
 using BlazorIdentity.Relational;
-using BlazorIdentity.Shared.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -50,27 +50,8 @@ app.MapPost("/Logout", async (ClaimsPrincipal user, SignInManager<ApplicationUse
     return TypedResults.Ok();
 });
 
-var summaries = new[]
-{
-    "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-};
-
-app.MapGet("/weatherForecasts", context =>
-{
-    var forecasts = Enumerable.Range(1, 5).Select(index =>
-            new WeatherForecast(
-                DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-                Random.Shared.Next(-20, 55),
-                summaries[Random.Shared.Next(summaries.Length)]))
-        .ToArray();
-
-    return context.Response.WriteAsJsonAsync(forecasts);
-});
-
-app.MapGet("/me", context =>
-{
-    return context.Response.WriteAsJsonAsync(context.User.Claims.Select(c => new KeyValuePair<string, string>(c.Type, c.Value)));
-}).RequireAuthorization().RequireCors("api");
+app.MapWeatherForecastsEndpoint()
+    .MapMeEndpoint();
 
 app.UseCors("api");
 
