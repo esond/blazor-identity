@@ -1,14 +1,14 @@
 using System.Security.Claims;
 using System.Text.Json;
+using BlazorIdentity.Relational;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Primitives;
-using BlazorIdentity.Web.Components.Account.Pages;
-using BlazorIdentity.Web.Components.Account.Pages.Manage;
-using BlazorIdentity.Web.Data;
+using BlazorIdentity.Web.Server.Components.Account.Pages;
+using BlazorIdentity.Web.Server.Components.Account.Pages.Manage;
 
 namespace Microsoft.AspNetCore.Routing;
 
