@@ -1,9 +1,39 @@
+using BlazorIdentity.Relational;
 using BlazorIdentity.Shared.Models;
+using Microsoft.AspNetCore.DataProtection;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace BlazorIdentity.Api;
 
 public static class ProgramExtensions
 {
+    public static IServiceCollection AddDatabaseServices(this IServiceCollection services, string connectionString)
+    {
+        services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(connectionString));
+
+        return services;
+    }
+
+    public static IServiceCollection AddIdentityServices(this IServiceCollection services)
+    {
+        services.AddDataProtection()
+            .PersistKeysToDbContext<ApplicationDbContext>()
+            .SetApplicationName("BlazorIdentity");
+
+        services.AddAuthentication(IdentityConstants.ApplicationScheme)
+            .AddIdentityCookies();
+
+        services.AddAuthorizationBuilder();
+
+        services.AddIdentityCore<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
+            .AddEntityFrameworkStores<ApplicationDbContext>()
+            .AddSignInManager()
+            .AddDefaultTokenProviders();
+
+        return services;
+    }
+
     public static WebApplication MapWeatherForecastsEndpoint(this WebApplication app)
     {
         var summaries = new[]

@@ -40,14 +40,6 @@
 
     <h2>Fetched user claims</h2>
 
-    @if (_fetchError is not null)
-    {
-        <h5>Error fetching items:</h5>
-        <p>
-            @_fetchError
-        </p>
-    }
-
     @if (_fetchedClaims is null)
     {
         <p>
@@ -78,8 +70,6 @@
 
 @code {
     private KeyValuePair<string, string>[]? _fetchedClaims;
-
-    private string? _fetchError;
 
     protected override async Task OnInitializedAsync()
     {

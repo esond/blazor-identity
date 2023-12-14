@@ -1,8 +1,4 @@
 using BlazorIdentity.Api;
-using BlazorIdentity.Relational;
-using Microsoft.AspNetCore.DataProtection;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,25 +14,9 @@ builder.Services.AddCors(opts =>
     });
 });
 
-builder.Services.AddDataProtection()
-    .PersistKeysToDbContext<ApplicationDbContext>()
-    .SetApplicationName("BlazorIdentity");
-
-builder.Services.AddAuthentication(IdentityConstants.ApplicationScheme)
-    .AddIdentityCookies();
-
-builder.Services.AddAuthorizationBuilder();
-
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ??
-    throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
-
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlServer(connectionString));
-
-builder.Services.AddIdentityCore<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
-    .AddEntityFrameworkStores<ApplicationDbContext>()
-    .AddSignInManager()
-    .AddDefaultTokenProviders();
+builder.Services
+    .AddDatabaseServices(builder.Configuration.GetConnectionString("DefaultConnection")!)
+    .AddIdentityServices();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
