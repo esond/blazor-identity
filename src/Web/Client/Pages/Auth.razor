@@ -85,19 +85,9 @@
     {
         await base.OnInitializedAsync();
 
-        // Simulate asynchronous loading to demonstrate a loading indicator
-        await Task.Delay(500);
+        var response = await UsersApi.GetMe();
 
-        try
-        {
-            var response = await UsersApi.GetMe();
-
-            _fetchedClaims = response.Content!;
-        }
-        catch (HttpRequestException ex)
-        {
-            _fetchError = $"{ex.StatusCode}: {ex.Message}";
-        }
+        _fetchedClaims = response.Content!;
     }
 
 }
