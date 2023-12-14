@@ -1,6 +1,8 @@
 using System.Security.Claims;
 using BlazorIdentity.Api;
 using BlazorIdentity.Relational;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -18,8 +20,25 @@ builder.Services.AddCors(opts =>
     });
 });
 
-builder.Services.AddAuthentication(IdentityConstants.ApplicationScheme)
-    .AddIdentityCookies();
+builder.Services.AddDataProtection()
+    .PersistKeysToDbContext<ApplicationDbContext>()
+    .SetApplicationName("BlazorIdentity");
+
+builder.Services.AddAuthentication(options =>
+    {
+        options.DefaultScheme = IdentityConstants.ApplicationScheme;
+        options.DefaultSignInScheme = IdentityConstants.ExternalScheme;
+    })
+    .AddIdentityCookies(configure =>
+    {
+        configure.ApplicationCookie.Configure(opts =>
+        {
+            opts.Cookie.Name = ".AspNet.SharedCookie";
+            opts.Cookie.Domain = "localhost";
+            opts.Cookie.SameSite = SameSiteMode.Lax;
+            opts.Cookie.HttpOnly = true;
+        });
+    });
 
 builder.Services.AddAuthorizationBuilder();
 
@@ -29,16 +48,21 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString));
 
-builder.Services.AddIdentityCore<ApplicationUser>()
+builder.Services.AddIdentityCore<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
     .AddEntityFrameworkStores<ApplicationDbContext>()
-    .AddApiEndpoints();
+    .AddSignInManager()
+    .AddDefaultTokenProviders();
+
+//builder.Services.AddIdentityCore<ApplicationUser>()
+//    .AddEntityFrameworkStores<ApplicationDbContext>();
+    //.AddApiEndpoints();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-app.MapIdentityApi<ApplicationUser>();
+//app.MapIdentityApi<ApplicationUser>();
 
 app.UseCors();
 app.UseAuthentication();

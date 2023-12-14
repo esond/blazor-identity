@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using BlazorIdentity.Web.Client.Pages;
 using BlazorIdentity.Web.Server.Components;
 using BlazorIdentity.Web.Server.Components.Account;
+using Microsoft.AspNetCore.DataProtection;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,12 +20,25 @@ builder.Services.AddScoped<IdentityUserAccessor>();
 builder.Services.AddScoped<IdentityRedirectManager>();
 builder.Services.AddScoped<AuthenticationStateProvider, PersistingRevalidatingAuthenticationStateProvider>();
 
+builder.Services.AddDataProtection()
+    .PersistKeysToDbContext<ApplicationDbContext>()
+    .SetApplicationName("BlazorIdentity");
+
 builder.Services.AddAuthentication(options =>
     {
         options.DefaultScheme = IdentityConstants.ApplicationScheme;
         options.DefaultSignInScheme = IdentityConstants.ExternalScheme;
     })
-    .AddIdentityCookies();
+    .AddIdentityCookies(configure =>
+    {
+        configure.ApplicationCookie.Configure(opts =>
+        {
+            opts.Cookie.Name = ".AspNet.SharedCookie";
+            opts.Cookie.Domain = "localhost";
+            opts.Cookie.SameSite = SameSiteMode.Lax;
+            opts.Cookie.HttpOnly = true;
+        });
+    });
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
