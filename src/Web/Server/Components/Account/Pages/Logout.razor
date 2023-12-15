@@ -1,0 +1,36 @@
+﻿@page "/Account/Logout"
+
+@using Microsoft.AspNetCore.Identity
+@using Microsoft.AspNetCore.Authentication
+
+@inject IdentityRedirectManager RedirectManager
+
+<PageTitle>Logout</PageTitle>
+
+<h1>Logout</h1>
+
+<AuthorizeView>
+    <Authorized>
+        <div class="alert alert-info">Logging you out...</div>
+    </Authorized>
+    <NotAuthorized>
+        <div class="alert alert-success">You're logged out. <a href="/login">Log in.</a></div>
+    </NotAuthorized>
+</AuthorizeView>
+
+@code {
+    [CascadingParameter]
+    private HttpContext HttpContext { get; set; } = default!;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+
+        if (HttpMethods.IsGet(HttpContext.Request.Method))
+        {
+            await HttpContext.SignOutAsync(IdentityConstants.ApplicationScheme);
+        }
+
+        RedirectManager.RedirectTo("Account/Login");
+    }
+}

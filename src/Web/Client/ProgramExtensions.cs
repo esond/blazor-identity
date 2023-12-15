@@ -10,7 +10,8 @@ public static class ProgramExtensions
         services.AddTransient<CookieHandler>();
 
         services.AddRefitClient<IWeatherApi>()
-            .ConfigureHttpClient(client => client.BaseAddress = new Uri(baseUrl));
+            .ConfigureHttpClient(client => client.BaseAddress = new Uri(baseUrl))
+            .AddHttpMessageHandler<CookieHandler>();
 
         services.AddRefitClient<IUsersApi>()
             .ConfigureHttpClient(client => client.BaseAddress = new Uri(baseUrl))

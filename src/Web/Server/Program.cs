@@ -14,9 +14,6 @@ builder.Services
     .AddIdentityServices()
     .AddApiClients("https://localhost:5277");
 
-// MY STUFF
-builder.Services.AddApiClients("https://localhost:5277");
-
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

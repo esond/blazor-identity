@@ -2,6 +2,7 @@ using BlazorIdentity.Relational;
 using BlazorIdentity.Shared.Models;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace BlazorIdentity.Api;
@@ -52,6 +53,7 @@ public static class ProgramExtensions
 
                 return forecasts;
             })
+            .RequireAuthorization()
             .WithName("GetWeatherForecast")
             .WithOpenApi();
 
@@ -70,6 +72,21 @@ public static class ProgramExtensions
             .RequireAuthorization()
             .WithName("GetMe")
             .WithOpenApi();
+
+        return app;
+    }
+
+    public static WebApplication MapLogoutEndpoint(this WebApplication app)
+    {
+        app.MapPost("/logout", async (SignInManager<ApplicationUser> signInManager, [FromBody] object? empty) =>
+            {
+                if (empty is null)
+                    return Results.NotFound();
+
+                await signInManager.SignOutAsync();
+                return Results.Ok();
+            })
+            .RequireAuthorization();
 
         return app;
     }
