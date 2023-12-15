@@ -15,10 +15,7 @@ using Nuke.Common.Tools.DotNet;
 [ShutdownDotNetAfterServerBuild]
 [GitHubActions(
     "continuous",
-    GitHubActionsImage.WindowsLatest,
     GitHubActionsImage.UbuntuLatest,
-    GitHubActionsImage.MacOsLatest,
-    FetchDepth = 0,
     OnPullRequestBranches = ["main"],
     OnPushBranches = ["main"],
     PublishArtifacts = true,
