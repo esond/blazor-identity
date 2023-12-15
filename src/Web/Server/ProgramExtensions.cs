@@ -25,7 +25,6 @@ public static class ProgramExtensions
         services.AddScoped<AuthenticationStateProvider, PersistingRevalidatingAuthenticationStateProvider>();
 
         services.AddDataProtection()
-            .PersistKeysToDbContext<ApplicationDbContext>()
             .SetApplicationName("BlazorIdentity");
 
         services.AddAuthentication(IdentityConstants.ApplicationScheme)

@@ -1,10 +1,9 @@
-using Microsoft.AspNetCore.DataProtection.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace BlazorIdentity.Relational;
 
-public class ApplicationDbContext : IdentityDbContext<ApplicationUser>, IDataProtectionKeyContext
+public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
 {
     public ApplicationDbContext()
     {
@@ -14,8 +13,6 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>, IDataPro
         : base(options)
     {
     }
-
-    public DbSet<DataProtectionKey> DataProtectionKeys { get; set; } = null!;
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {

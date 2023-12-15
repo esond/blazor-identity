@@ -18,16 +18,15 @@ framework.
 
 ## Notes
 
-Configuring cookies creation with a shared Data Protection key was the key to
-getting this to work harmoniously. The Data Protection key is stored in the
-SQL Server database using [this](https://github.com/esond/blazor-identity/blob/93e3d3fe26231ff314e1dfdc0d8c18d3a3e20497/src/Web/Server/ProgramExtensions.cs#L27-L29)
+Configuring cookie creation with a shared Data Protection key was the key to
+getting this to work harmoniously. The common data protection key is set up
+using [this](https://github.com/esond/blazor-identity/blob/93e3d3fe26231ff314e1dfdc0d8c18d3a3e20497/src/Web/Server/ProgramExtensions.cs#L27-L29)
 configuration:
 
 ```csharp
 services.AddDataProtection()
-    .PersistKeysToDbContext<ApplicationDbContext>()
     .SetApplicationName("BlazorIdentity");
 ```
 
 For more information on configuring ASP.NET Core data protection, see the
-[official docs](https://learn.microsoft.com/en-us/aspnet/core/security/data-protection/configuration/overview?view=aspnetcore-8.0#persistkeystodbcontext)
+[official docs](https://learn.microsoft.com/en-us/aspnet/core/security/data-protection/configuration/overview)

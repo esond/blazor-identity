@@ -19,7 +19,6 @@ public static class ProgramExtensions
     public static IServiceCollection AddIdentityServices(this IServiceCollection services)
     {
         services.AddDataProtection()
-            .PersistKeysToDbContext<ApplicationDbContext>()
             .SetApplicationName("BlazorIdentity");
 
         services.AddAuthentication(IdentityConstants.ApplicationScheme)
