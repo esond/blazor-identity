@@ -1,8 +1,8 @@
 using BlazorIdentity.Relational;
 using BlazorIdentity.Shared.Models;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace BlazorIdentity.Api;
@@ -23,7 +23,15 @@ public static class ProgramExtensions
             .SetApplicationName("BlazorIdentity");
 
         services.AddAuthentication(IdentityConstants.ApplicationScheme)
-            .AddIdentityCookies();
+            .AddIdentityCookies()
+            .ApplicationCookie!.Configure(opt => opt.Events = new CookieAuthenticationEvents
+            {
+                OnRedirectToLogin = ctx =>
+                {
+                    ctx.Response.StatusCode = StatusCodes.Status401Unauthorized;
+                    return Task.CompletedTask;
+                }
+            });
 
         services.AddAuthorizationBuilder();
 
@@ -72,21 +80,6 @@ public static class ProgramExtensions
             .RequireAuthorization()
             .WithName("GetMe")
             .WithOpenApi();
-
-        return app;
-    }
-
-    public static WebApplication MapLogoutEndpoint(this WebApplication app)
-    {
-        app.MapPost("/logout", async (SignInManager<ApplicationUser> signInManager, [FromBody] object? empty) =>
-            {
-                if (empty is null)
-                    return Results.NotFound();
-
-                await signInManager.SignOutAsync();
-                return Results.Ok();
-            })
-            .RequireAuthorization();
 
         return app;
     }

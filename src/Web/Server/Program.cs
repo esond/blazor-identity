@@ -9,10 +9,12 @@ builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents()
     .AddInteractiveWebAssemblyComponents();
 
+var apiBaseUrl = builder.Configuration["ApiBaseUrl"]!;
+
 builder.Services
     .AddDatabaseServices(builder.Configuration.GetConnectionString("DefaultConnection")!)
     .AddIdentityServices()
-    .AddApiClients("https://localhost:5277");
+    .AddApiClients(apiBaseUrl);
 
 var app = builder.Build();
 
